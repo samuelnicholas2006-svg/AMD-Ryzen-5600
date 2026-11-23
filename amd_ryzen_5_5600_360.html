@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMD Ryzen™ 5 5600 桌上型處理器 | 360° 互動式 3D 展示</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js (r128) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Google Fonts: Inter & Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        amd: {
+                            red: '#ED1C24',
+                            orange: '#FF5500',
+                            dark: '#0A0A0C',
+                            panel: '#121317',
+                            card: '#191B21',
+                            border: '#2A2D37'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#0A0A0C] text-gray-100 font-sans antialiased selection:bg-[#FF5500] selection:text-white overflow-x-hidden">
+
+    <!-- 頂部導覽列 -->
+    <header class="sticky top-0 z-40 border-b border-[#2A2D37]/80 bg-[#0A0A0C]/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 品牌識別 -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1.5">
+                    <span class="font-black text-xl tracking-tight text-white">AMD</span>
+                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.3 5.7H5.7v3.6h9v9h3.6V5.7zM5.7 13.5v4.8h4.8l3.6-3.6H9.3v-4.8l-3.6 3.6z"/>
+                    </svg>
+                </div>
+                <span class="h-5 w-[1px] bg-[#2A2D37]"></span>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold tracking-wider uppercase text-[#FF5500]">RYZEN™ 5000 SERIES</span>
+                    <span class="hidden sm:inline-block text-xs px-2 py-0.5 rounded-full bg-[#FF5500]/15 text-[#FF5500] border border-[#FF5500]/30 font-medium">360° 互動檢視</span>
+                </div>
+            </div>
+
+            <!-- 右側操作按鈕：下載完整 HTML 檔案 -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button id="btn-download-html" type="button" class="group flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#ED1C24] to-[#FF5500] hover:from-[#ff2a32] hover:to-[#ff6a1f] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#FF5500]/20 transition-all active:scale-95 cursor-pointer">
+                    <svg class="w-4 h-4 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span>下載 HTML 檔案</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 全域提示訊息列 (替代 alert) -->
+    <div id="toast-banner" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#191B21] border border-[#FF5500]/60 shadow-2xl text-sm text-white">
+            <span class="flex h-2.5 w-2.5 rounded-full bg-[#FF5500]"></span>
+            <span id="toast-message">已開始下載 AMD Ryzen 5 5600 展示網頁</span>
+        </div>
+    </div>
+
+    <!-- 主內容區 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+            <!-- 左側/上方：360° 互動式 3D 展示區 (佔 7 欄) -->
+            <section class="lg:col-span-7 flex flex-col gap-4">
+                <!-- 3D 畫布外框卡片 -->
+                <div class="relative rounded-2xl bg-gradient-to-b from-[#16181F] to-[#0D0E12] border border-[#2A2D37] shadow-2xl overflow-hidden">
+                    <!-- 頂部狀態與控制列 -->
+                    <div class="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0A0A0C]/80 backdrop-blur-md border border-[#2A2D37] pointer-events-auto">
+                            <span class="relative flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF5500] opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FF5500]"></span>
+                            </span>
+                            <span class="text-xs font-semibold text-gray-200 tracking-wide">3D 互動檢視器 · AM4 封裝</span>
+                        </div>
+
+                        <!-- 自動旋轉與熱點開關 -->
+                        <div class="flex items-center gap-2 pointer-events-auto">
+                            <button id="btn-toggle-hotspots" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FF5500]/20 text-[#FF5500] border border-[#FF5500]/50 text-xs font-semibold hover:bg-[#FF5500]/30 transition cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                <span>構造熱點：開啟</span>
+                            </button>
+                            <button id="btn-auto-rotate" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0A0A0C]/80 backdrop-blur-md text-gray-300 border border-[#2A2D37] text-xs font-semibold hover:border-[#FF5500]/60 hover:text-white transition cursor-pointer">
+                                <svg id="icon-rotate" class="w-3.5 h-3.5 text-[#FF5500]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                                <span id="text-auto-rotate">自動旋轉：開啟</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3D 渲染容器 -->
+                    <div id="canvas-wrapper" class="relative w-full h-[380px] sm:h-[460px] lg:h-[520px] cursor-grab active:cursor-grabbing select-none touch-none">
+                        <!-- 載入中提示 -->
+                        <div id="loader-overlay" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0D0E12] transition-opacity duration-500">
+                            <div class="w-10 h-10 border-4 border-[#2A2D37] border-t-[#FF5500] rounded-full animate-spin mb-3"></div>
+                            <p class="text-xs font-medium text-gray-400 tracking-wider">正在建構 AM4 1331 針腳與 IHS 3D 模型...</p>
+                        </div>
+
+                        <!-- 3D 熱點標記層 (由 JS 動態定位投影至 2D 螢幕座標) -->
+                        <div id="hotspots-layer" class="absolute inset-0 z-10 pointer-events-none overflow-hidden"></div>
+                    </div>
+
+                    <!-- 底部縮放與角度提示條 -->
+                    <div class="absolute bottom-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+                        <div class="px-3 py-1.5 rounded-xl bg-[#0A0A0C]/80 backdrop-blur-md border border-[#2A2D37] text-[11px] text-gray-400 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-[#FF5500]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
+                            </svg>
+                            <span>拖曳 360° 旋轉 · 滾輪/雙指縮放 · 點擊橘色光點檢視構造</span>
+                        </div>
+
+                        <!-- 縮放控制鈕 -->
+                        <div class="flex items-center gap-1.5 bg-[#0A0A0C]/85 backdrop-blur-md p-1 rounded-xl border border-[#2A2D37] pointer-events-auto">
+                            <button id="btn-zoom-out" type="button" title="縮小" class="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-[#2A2D37] transition cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/></svg>
+                            </button>
+                            <span id="zoom-level-text" class="text-xs font-mono text-gray-300 px-1.5 min-w-[44px] text-center">100%</span>
+                            <button id="btn-zoom-in" type="button" title="放大" class="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-[#2A2D37] transition cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            </button>
+                            <div class="w-[1px] h-4 bg-[#2A2D37] mx-0.5"></div>
+                            <button id="btn-reset-view" type="button" title="重置視角" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white hover:bg-[#2A2D37] transition cursor-pointer">
+                                重置視角
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快速視角切換按鈕列 -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <button type="button" data-preset="front" class="preset-btn flex items-center justify-center gap-2 p-3 rounded-xl bg-[#191B21] border border-[#2A2D37] hover:border-[#FF5500] text-xs sm:text-sm font-bold text-gray-200 hover:text-white transition shadow-md cursor-pointer">
+                        <span class="w-2 h-2 rounded-full bg-gray-400"></span>
+                        <span>正面頂蓋 (IHS)</span>
+                    </button>
+                    <button type="button" data-preset="side" class="preset-btn flex items-center justify-center gap-2 p-3 rounded-xl bg-[#191B21] border border-[#2A2D37] hover:border-[#FF5500] text-xs sm:text-sm font-bold text-gray-200 hover:text-white transition shadow-md cursor-pointer">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span>側面輪廓</span>
+                    </button>
+                    <button type="button" data-preset="back" class="preset-btn flex items-center justify-center gap-2 p-3 rounded-xl bg-[#191B21] border border-[#2A2D37] hover:border-[#FF5500] text-xs sm:text-sm font-bold text-gray-200 hover:text-white transition shadow-md cursor-pointer">
+                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                        <span>背面 AM4 針腳</span>
+                    </button>
+                    <button type="button" data-preset="angle45" class="preset-btn flex items-center justify-center gap-2 p-3 rounded-xl bg-[#191B21] border border-[#FF5500]/70 text-xs sm:text-sm font-bold text-white transition shadow-md cursor-pointer">
+                        <span class="w-2 h-2 rounded-full bg-[#FF5500]"></span>
+                        <span>45° 立體仰視</span>
+                    </button>
+                </div>
+
+                <!-- 互動構造熱點說明面板 -->
+                <div id="hotspot-detail-card" class="rounded-2xl bg-[#121317] border border-[#2A2D37] p-5 transition-all">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div id="hs-badge" class="w-9 h-9 rounded-xl bg-[#FF5500]/15 border border-[#FF5500]/40 flex items-center justify-center text-[#FF5500] font-black text-sm shrink-0">
+                                01
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#FF5500]">硬體構造解析</span>
+                                    <span id="hs-tag" class="text-[11px] px-2 py-0.5 rounded-md bg-[#191B21] text-gray-400 border border-[#2A2D37]">IHS 散熱頂蓋</span>
+                                </div>
+                                <h3 id="hs-title" class="text-base sm:text-lg font-bold text-white mt-0.5">鍍鎳銅質整合式散熱頂蓋 (IHS)</h3>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" data-hs-index="0" class="hs-selector w-7 h-7 rounded-lg bg-[#FF5500] text-white text-xs font-bold transition cursor-pointer">1</button>
+                            <button type="button" data-hs-index="1" class="hs-selector w-7 h-7 rounded-lg bg-[#191B21] text-gray-400 hover:text-white border border-[#2A2D37] text-xs font-bold transition cursor-pointer">2</button>
+                            <button type="button" data-hs-index="2" class="hs-selector w-7 h-7 rounded-lg bg-[#191B21] text-gray-400 hover:text-white border border-[#2A2D37] text-xs font-bold transition cursor-pointer">3</button>
+                            <button type="button" data-hs-index="3" class="hs-selector w-7 h-7 rounded-lg bg-[#191B21] text-gray-400 hover:text-white border border-[#2A2D37] text-xs font-bold transition cursor-pointer">4</button>
+                        </div>
+                    </div>
+                    <p id="hs-desc" class="mt-3 text-sm text-gray-300 leading-relaxed">
+                        採用高導熱鍍鎳銅合金打造，表面具備精細雷射雕刻「AMD Ryzen 5 5600」型號、DataMatrix 二維碼與專屬 OPN 序號「100-000000927」。內部採用高級釺焊導熱介質（STIM）與晶片緊密接合，確保 65W TDP 運作下具備卓越的熱傳導效率。
+                    </p>
+                </div>
+            </section>
+
+            <!-- 右側/下方：AMD Ryzen 5 5600 官方產品規格與技術亮點 (佔 5 欄) -->
+            <section class="lg:col-span-5 flex flex-col gap-5">
+                <!-- 產品標題與核心賣點卡片 -->
+                <div class="rounded-2xl bg-gradient-to-br from-[#191B21] via-[#121317] to-[#0E0F13] border border-[#2A2D37] p-6 shadow-xl relative overflow-hidden">
+                    <!-- 裝飾性橘紅光暈 -->
+                    <div class="absolute -top-20 -right-20 w-48 h-48 bg-[#FF5500]/15 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="flex flex-wrap items-center gap-2 mb-3">
+                        <span class="px-2.5 py-1 rounded-lg bg-[#ED1C24] text-white text-xs font-black tracking-wider uppercase">桌上型處理器</span>
+                        <span class="px-2.5 py-1 rounded-lg bg-[#1F222B] text-gray-300 border border-[#2A2D37] text-xs font-semibold">Zen 3 架構 · 7nm 製程</span>
+                    </div>
+
+                    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">
+                        AMD Ryzen™ 5 5600
+                    </h1>
+                    <p class="mt-2 text-sm text-gray-400 leading-relaxed">
+                        專為流暢 1080p 高幀率遊戲與多工創作打造。憑藉屢獲殊榮的「Zen 3」核心架構與高達 35MB 總快取記憶體，釋放驚人的單核與多核運算效能。
+                    </p>
+
+                    <!-- 四大關鍵數據亮點 -->
+                    <div class="grid grid-cols-2 gap-3 mt-5">
+                        <div class="p-3.5 rounded-xl bg-[#0D0E12]/90 border border-[#2A2D37]">
+                            <div class="text-xs text-gray-400 font-medium">核心 / 執行緒</div>
+                            <div class="text-xl sm:text-2xl font-black text-white mt-0.5">6 <span class="text-sm font-semibold text-gray-400">核心</span> / 12 <span class="text-sm font-semibold text-gray-400">執行緒</span></div>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-[#0D0E12]/90 border border-[#2A2D37]">
+                            <div class="text-xs text-gray-400 font-medium">最大超頻時脈</div>
+                            <div class="text-xl sm:text-2xl font-black text-[#FF5500] mt-0.5">高達 4.4 <span class="text-sm font-bold text-gray-300">GHz</span></div>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-[#0D0E12]/90 border border-[#2A2D37]">
+                            <div class="text-xs text-gray-400 font-medium">總快取記憶體</div>
+                            <div class="text-xl sm:text-2xl font-black text-white mt-0.5">35 <span class="text-sm font-semibold text-gray-400">MB (L2+L3)</span></div>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-[#0D0E12]/90 border border-[#2A2D37]">
+                            <div class="text-xs text-gray-400 font-medium">預設熱設計功耗</div>
+                            <div class="text-xl sm:text-2xl font-black text-emerald-400 mt-0.5">65 <span class="text-sm font-semibold text-gray-400">W TDP</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 完整官方規格表 -->
+                <div class="rounded-2xl bg-[#121317] border border-[#2A2D37] overflow-hidden shadow-xl">
+                    <div class="px-5 py-4 border-b border-[#2A2D37] bg-[#16181F] flex items-center justify-between">
+                        <h2 class="text-sm font-bold text-white tracking-wide flex items-center gap-2">
+                            <span class="w-1.5 h-4 rounded-full bg-[#FF5500]"></span>
+                            <span>官方產品規格總覽</span>
+                        </h2>
+                        <span class="text-xs font-mono text-gray-400">OPN: 100-000000927</span>
+                    </div>
+
+                    <div class="divide-y divide-[#2A2D37]/70 text-sm">
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">處理器架構</span>
+                            <span class="font-semibold text-white text-right">AMD "Zen 3" Core Architecture</span>
+                        </div>
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">CPU 核心 / 執行緒數</span>
+                            <span class="font-semibold text-white text-right">6 核心 / 12 執行緒</span>
+                        </div>
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">基礎時脈 / 最大超頻時脈</span>
+                            <span class="font-semibold text-white text-right">3.5 GHz / 高達 4.4 GHz</span>
+                        </div>
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">快取記憶體配置</span>
+                            <span class="font-semibold text-white text-right">384KB L1 · 3MB L2 · 32MB L3</span>
+                        </div>
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">製程技術</span>
+                            <span class="font-semibold text-white text-right">TSMC 台積電 7nm FinFET</span>
+                        </div>
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">CPU 腳位封裝</span>
+                            <span class="font-semibold text-amber-400 text-right">AM4 (1331 鍍金針腳)</span>
+                        </div>
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">PCI Express® 版本</span>
+                            <span class="font-semibold text-white text-right">PCIe® 4.0 (24 通道)</span>
+                        </div>
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">系統記憶體支援</span>
+                            <span class="font-semibold text-white text-right">雙通道 DDR4-3200MHz</span>
+                        </div>
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">預設 TDP / 最高運作溫度</span>
+                            <span class="font-semibold text-white text-right">65W / 90°C (Tjmax)</span>
+                        </div>
+                        <div class="px-5 py-3 flex justify-between items-center gap-4 hover:bg-[#191B21]/60 transition">
+                            <span class="text-gray-400">隨附原廠散熱器</span>
+                            <span class="font-semibold text-white text-right">AMD Wraith Stealth</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 支援技術標籤區 -->
+                <div class="rounded-2xl bg-[#121317] border border-[#2A2D37] p-5">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">支援的 AMD 核心技術</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#191B21] border border-[#2A2D37] hover:border-[#FF5500]/60 text-xs font-semibold text-gray-200 transition">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#FF5500]"></span>
+                            AMD StoreMI 儲存加速技術
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#191B21] border border-[#2A2D37] hover:border-[#FF5500]/60 text-xs font-semibold text-gray-200 transition">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#FF5500]"></span>
+                            AMD Ryzen™ Master 超頻公用程式
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#191B21] border border-[#2A2D37] hover:border-[#FF5500]/60 text-xs font-semibold text-gray-200 transition">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#FF5500]"></span>
+                            AMD Ryzen™ VR-Ready Premium
+                        </span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 頁尾資訊 -->
+    <footer class="border-t border-[#2A2D37]/60 mt-10 py-6 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 AMD Ryzen™ 5 5600 互動式 3D 展示頁面 · 規格資料依據 AMD 官方 Zen 3 桌上型處理器技術文件建置</p>
+        </div>
+    </footer>
+
+    <!-- 3D 互動檢視器與頁面邏輯腳本 -->
+    <script>
+        /**
+         * 構造熱點資料定義
+         * 對應 3D 模型上的 4 個核心硬體位置 (正面 IHS、側面 PCB、背面 AM4 針腳、中央 SMD 電容)
+         */
+        const HOTSPOTS_DATA = [
+            {
+                id: 'ihs',
+                badge: '01',
+                tag: 'IHS 散熱頂蓋',
+                title: '鍍鎳銅質整合式散熱頂蓋 (IHS)',
+                desc: '採用高導熱鍍鎳銅合金打造，表面具備精細雷射雕刻「AMD Ryzen 5 5600」型號、DataMatrix 二維碼與專屬 OPN 序號「100-000000927」。內部採用高級釺焊導熱介質（STIM）與晶片緊密接合，確保 65W TDP 運作下具備卓越的熱傳導效率。',
+                position: new THREE.Vector3(0, 0.24, 0.15),
+                cameraPreset: { rotX: 0.35, rotY: 0.25, zoom: 1.15 }
+            },
+            {
+                id: 'die',
+                badge: '02',
+                tag: '7nm Zen 3 核心',
+                title: 'Zen 3 架構 7nm 製程運算晶片 (CCD)',
+                desc: '頂蓋下方封裝了台積電 7nm FinFET 製程的 Zen 3 運算晶片（CCD）與 12nm I/O 晶片。統一的 8 核心 CCX 設計讓 6 顆核心能直接共享完整 32MB L3 快取，大幅降低核心間通訊延遲並提升 IPC 指令週期吞吐量。',
+                position: new THREE.Vector3(-0.75, 0.22, -0.55),
+                cameraPreset: { rotX: 0.65, rotY: -0.55, zoom: 1.25 }
+            },
+            {
+                id: 'pins',
+                badge: '03',
+                tag: 'AM4 針腳陣列',
+                title: 'AM4 1331 根高純度鍍金針腳陣列',
+                desc: '採用 PGA（插針網格陣列）封裝規格，底部精密排列 1331 根鍍金銅合金針腳，具備低接觸電阻與抗氧化特性，並支援完整 24 條 PCIe® 4.0 通道與雙通道 DDR4 記憶體訊號傳輸。',
+                position: new THREE.Vector3(1.15, -0.22, 1.15),
+                cameraPreset: { rotX: -2.45, rotY: 0.45, zoom: 1.2 }
+            },
+            {
+                id: 'pcb',
+                badge: '04',
+                tag: '多層有機基板與電容',
+                title: '高密度綠色多層有機 PCB 與去耦電容陣列',
+                desc: '40mm × 40mm 綠色高密度多層有機基板，左下角具備金色三角形 Pin 1 防呆安裝標記；背面中央鏤空區域配置數十顆微型多層陶瓷貼片電容（MLCC），負責為高速核心提供純淨穩定的瞬態供電濾波。',
+                position: new THREE.Vector3(0, -0.18, 0),
+                cameraPreset: { rotX: -3.05, rotY: 0.0, zoom: 1.3 }
+            }
+        ];
+
+        // 顯示底部通知提示
+        function showToast(msg) {
+            const banner = document.getElementById('toast-banner');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.textContent = msg;
+            banner.classList.remove('translate-y-24', 'opacity-0');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                banner.classList.add('translate-y-24', 'opacity-0');
+            }, 3200);
+        }
+
+        // 更新下方熱點解析卡片內容
+        function selectHotspot(index) {
+            const data = HOTSPOTS_DATA[index];
+            if (!data) return;
+
+            document.getElementById('hs-badge').textContent = data.badge;
+            document.getElementById('hs-tag').textContent = data.tag;
+            document.getElementById('hs-title').textContent = data.title;
+            document.getElementById('hs-desc').textContent = data.desc;
+
+            // 更新按鈕高亮狀態
+            document.querySelectorAll('.hs-selector').forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.className = 'hs-selector w-7 h-7 rounded-lg bg-[#FF5500] text-white text-xs font-bold transition cursor-pointer shadow-md shadow-[#FF5500]/30';
+                } else {
+                    btn.className = 'hs-selector w-7 h-7 rounded-lg bg-[#191B21] text-gray-400 hover:text-white border border-[#2A2D37] text-xs font-bold transition cursor-pointer';
+                }
+            });
+
+            // 同步更新 3D 畫布上的熱點 Active 樣式
+            document.querySelectorAll('.hotspot-pin').forEach((pin, idx) => {
+                if (idx === index) {
+                    pin.classList.add('ring-4', 'ring-[#FF5500]/50', 'scale-110');
+                } else {
+                    pin.classList.remove('ring-4', 'ring-[#FF5500]/50', 'scale-110');
+                }
+            });
+        }
+
+        /**
+         * 程序化生成正面 IHS 鍍鎳金屬頂蓋高解析度貼圖 (包含雷射雕刻文字、AMD RYZEN 標誌與 DataMatrix QR Code)
+         */
+        function createIHSTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 1024;
+            const ctx = canvas.getContext('2d');
+
+            // 1. 鍍鎳金屬拉絲漸層底色
+            const grad = ctx.createLinearGradient(0, 0, 1024, 1024);
+            grad.addColorStop(0, '#cfd2d6');
+            grad.addColorStop(0.35, '#e2e5e9');
+            grad.addColorStop(0.65, '#bfc3c8');
+            grad.addColorStop(1, '#d6d9dd');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1024, 1024);
+
+            // 加入微細金屬拉絲紋理
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 1024; i += 3) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(1024, i);
+                ctx.stroke();
+            }
+
+            // 頂蓋外緣斜角陰影框
+            ctx.strokeStyle = 'rgba(70, 75, 82, 0.45)';
+            ctx.lineWidth = 22;
+            ctx.strokeRect(11, 11, 1002, 1002);
+
+            // 雷射雕刻深灰墨色
+            ctx.fillStyle = '#33363b';
+            ctx.textBaseline = 'top';
+
+            // 2. 左上方型號文字：AMD Ryzen 5 5600
+            ctx.font = 'italic 800 44px Inter, sans-serif';
+            ctx.fillText('AMD Ryzen 5 5600', 115, 110);
+
+            // 3. 中央 AMD 標誌與箭頭
+            ctx.font = '900 46px Inter, sans-serif';
+            ctx.fillText('AMD', 235, 295);
+
+            // 繪製經典 AMD 箭頭圖示
+            ctx.save();
+            ctx.translate(352, 296);
+            ctx.fillStyle = '#33363b';
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(42, 0);
+            ctx.lineTo(42, 42);
+            ctx.lineTo(29, 42);
+            ctx.lineTo(29, 13);
+            ctx.lineTo(0, 13);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(0, 22);
+            ctx.lineTo(13, 22);
+            ctx.lineTo(13, 29);
+            ctx.lineTo(20, 29);
+            ctx.lineTo(20, 42);
+            ctx.lineTo(0, 42);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+
+            // 4. 大型 RYZEN 字樣
+            ctx.font = '900 124px Inter, sans-serif';
+            ctx.letterSpacing = '6px';
+            ctx.fillText('RYZEN', 228, 360);
+            ctx.letterSpacing = '0px';
+
+            // 5. 左下方 DataMatrix 二維碼模擬繪製
+            const qrX = 235;
+            const qrY = 585;
+            const cellSize = 9;
+            const gridCount = 16;
+            ctx.fillStyle = '#33363b';
+            // 偽隨機固定矩陣產生真實感二維碼
+            for (let r = 0; r < gridCount; r++) {
+                for (let c = 0; c < gridCount; c++) {
+                    const isBorder = (c === 0 || r === gridCount - 1);
+                    const isTiming = (r === 0 && c % 2 === 0) || (c === gridCount - 1 && r % 2 === 1);
+                    const hash = Math.sin(r * 17.3 + c * 31.7) * 10000;
+                    const isData = (hash - Math.floor(hash)) > 0.46;
+                    if (isBorder || isTiming || isData) {
+                        ctx.fillRect(qrX + c * cellSize, qrY + r * cellSize, cellSize - 1, cellSize - 1);
+                    }
+                }
+            }
+
+            // 6. 二維碼右側序號與產地資訊 (對應實體照片文字)
+            ctx.font = '600 31px "Courier New", monospace';
+            ctx.fillText('100-000000927', 415, 585);
+            ctx.fillText('BG 2247SUS', 415, 626);
+            ctx.fillText('DIFFUSED IN USA', 415, 667);
+            ctx.fillText('MADE IN MALAYSIA', 415, 708);
+
+            // 7. 左下角微細圓形防偽雷射標記
+            ctx.strokeStyle = 'rgba(51, 54, 59, 0.55)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(155, 845, 22, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.font = '700 18px Inter, sans-serif';
+            ctx.fillText('Z3', 143, 836);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.anisotropy = 8;
+            return texture;
+        }
+
+        /**
+         * 程序化生成綠色有機 PCB 基板貼圖 (包含走線、邊框、防呆金三角與背面焊墊)
+         */
+        function createPCBTexture(isBackside) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 1024;
+            const ctx = canvas.getContext('2d');
+
+            // 深翠綠色阻焊層基底
+            ctx.fillStyle = '#0d4f36';
+            ctx.fillRect(0, 0, 1024, 1024);
+
+            // 內部銅箔走線層深淺變化
+            ctx.fillStyle = '#116344';
+            ctx.fillRect(36, 36, 952, 952);
+
+            // 邊緣金色接地線框
+            ctx.strokeStyle = '#c59b38';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(22, 22, 980, 980);
+
+            if (!isBackside) {
+                // 正面左下角黃金三角形 (Pin 1 方向指示)
+                ctx.fillStyle = '#eab308';
+                ctx.beginPath();
+                ctx.moveTo(28, 996);
+                ctx.lineTo(95, 996);
+                ctx.lineTo(28, 929);
+                ctx.closePath();
+                ctx.fill();
+
+                // 正面四週微型 SMD 測試點
+                ctx.fillStyle = '#d4af37';
+                for (let i = 140; i < 880; i += 45) {
+                    ctx.fillRect(i, 42, 10, 6);
+                    ctx.fillRect(i, 976, 10, 6);
+                    ctx.fillRect(42, i, 6, 10);
+                    ctx.fillRect(976, i, 6, 10);
+                }
+            } else {
+                // 背面 AM4 針腳底座鍍金焊墊網格與中央電容區
+                ctx.fillStyle = '#093826';
+                ctx.fillRect(310, 310, 404, 404);
+
+                // 右上角與左上角防呆缺口標記
+                ctx.fillStyle = '#d4af37';
+                ctx.beginPath();
+                ctx.moveTo(996, 996);
+                ctx.lineTo(935, 996);
+                ctx.lineTo(996, 935);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.anisotropy = 8;
+            return texture;
+        }
+
+        /**
+         * 初始化 Three.js 360° 3D CPU 檢視器
+         */
+        function init3DViewer() {
+            const container = document.getElementById('canvas-wrapper');
+            const hotspotsLayer = document.getElementById('hotspots-layer');
+            const loaderOverlay = document.getElementById('loader-overlay');
+
+            const scene = new THREE.Scene();
+
+            // 相機設定
+            const camera = new THREE.PerspectiveCamera(
+                36,
+                container.clientWidth / container.clientHeight,
+                0.1,
+                100
+            );
+            const baseCameraDistance = 6.8;
+            let zoomFactor = 1.0;
+            camera.position.set(0, 0, baseCameraDistance);
+
+            // 渲染器設定
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.15;
+            container.appendChild(renderer.domElement);
+
+            // 專業攝影棚多點光源配置 (突顯金屬頂蓋反光與 1331 根金色針腳光澤)
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+            scene.add(ambientLight);
+
+            const keyLight = new THREE.DirectionalLight(0xffffff, 1.35);
+            keyLight.position.set(5, 8, 6);
+            scene.add(keyLight);
+
+            const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.75);
+            fillLight.position.set(-6, 3, 4);
+            scene.add(fillLight);
+
+            const rimLight = new THREE.DirectionalLight(0xff7b33, 0.85);
+            rimLight.position.set(0, -6, -5);
+            scene.add(rimLight);
+
+            const bottomLight = new THREE.DirectionalLight(0xfff3d6, 0.9);
+            bottomLight.position.set(2, -8, 4);
+            scene.add(bottomLight);
+
+            // 建立 CPU 總群組 (作為 360° 旋轉軸心)
+            const cpuGroup = new THREE.Group();
+            scene.add(cpuGroup);
+
+            // --- 1. 綠色有機 PCB 基板 (40mm x 40mm 比例 -> 3.2 x 3.2 單位) ---
+            const pcbSize = 3.2;
+            const pcbThickness = 0.085;
+            const pcbFrontTex = createPCBTexture(false);
+            const pcbBackTex = createPCBTexture(true);
+
+            const pcbSideMat = new THREE.MeshStandardMaterial({ color: 0x0e5c3e, roughness: 0.45, metalness: 0.1 });
+            const pcbTopMat = new THREE.MeshStandardMaterial({ map: pcbFrontTex, roughness: 0.35, metalness: 0.15 });
+            const pcbBottomMat = new THREE.MeshStandardMaterial({ map: pcbBackTex, roughness: 0.35, metalness: 0.25 });
+
+            const pcbMaterials = [
+                pcbSideMat, pcbSideMat,
+                pcbTopMat, pcbBottomMat,
+                pcbSideMat, pcbSideMat
+            ];
+            const pcbGeo = new THREE.BoxGeometry(pcbSize, pcbThickness, pcbSize);
+            const pcbMesh = new THREE.Mesh(pcbGeo, pcbMaterials);
+            cpuGroup.add(pcbMesh);
+
+            // --- 2. 鍍鎳銅質整合式散熱頂蓋 (IHS) ---
+            const ihsSize = 2.84;
+            const ihsHeight = 0.17;
+            const ihsTopTex = createIHSTexture();
+
+            const ihsSideMat = new THREE.MeshStandardMaterial({
+                color: 0xd0d4d9,
+                roughness: 0.25,
+                metalness: 0.88
+            });
+            const ihsTopMat = new THREE.MeshStandardMaterial({
+                map: ihsTopTex,
+                roughness: 0.28,
+                metalness: 0.82
+            });
+
+            // 頂蓋底座凸緣 (AM4 特有的多階梯金屬頂蓋外型)
+            const ihsFlangeGeo = new THREE.BoxGeometry(2.94, 0.045, 2.94);
+            const ihsFlangeMesh = new THREE.Mesh(ihsFlangeGeo, ihsSideMat);
+            ihsFlangeMesh.position.y = pcbThickness / 2 + 0.022;
+            cpuGroup.add(ihsFlangeMesh);
+
+            // 頂蓋主體
+            const ihsMainMaterials = [
+                ihsSideMat, ihsSideMat,
+                ihsTopMat, ihsSideMat,
+                ihsSideMat, ihsSideMat
+            ];
+            const ihsMainGeo = new THREE.BoxGeometry(ihsSize, ihsHeight, ihsSize);
+            const ihsMainMesh = new THREE.Mesh(ihsMainGeo, ihsMainMaterials);
+            ihsMainMesh.position.y = pcbThickness / 2 + 0.045 + ihsHeight / 2;
+            cpuGroup.add(ihsMainMesh);
+
+            // --- 3. 背面 AM4 1331 鍍金針腳陣列 (使用 InstancedMesh 高效能一次渲染) ---
+            const gridDim = 39; // 39x39 陣列扣除中央鏤空與防呆缺口，精準模擬 AM4 1331 針腳密度
+            const pinSpacing = 0.074;
+            const pinRadius = 0.013;
+            const pinLength = 0.19;
+
+            const pinPositions = [];
+            const halfGrid = (gridDim - 1) / 2;
+
+            for (let gx = 0; gx < gridDim; gx++) {
+                for (let gz = 0; gz < gridDim; gz++) {
+                    const dx = Math.abs(gx - halfGrid);
+                    const dz = Math.abs(gz - halfGrid);
+
+                    // 中央 13x13 鏤空區域 (放置 SMD 電容)
+                    if (dx < 6.5 && dz < 6.5) continue;
+
+                    // 四個角落防呆缺針 (AM4 物理防呆特徵)
+                    if ((gx <= 1 && gz <= 1) || (gx >= gridDim - 2 && gz <= 1) || (gx <= 1 && gz >= gridDim - 2)) {
+                        continue;
+                    }
+
+                    pinPositions.push({
+                        x: (gx - halfGrid) * pinSpacing,
+                        z: (gz - halfGrid) * pinSpacing
+                    });
+                }
+            }
+
+            const pinGeo = new THREE.CylinderGeometry(pinRadius * 0.85, pinRadius, pinLength, 8);
+            const goldPinMat = new THREE.MeshStandardMaterial({
+                color: 0xffc83b,
+                roughness: 0.22,
+                metalness: 0.94
+            });
+
+            const pinsInstanced = new THREE.InstancedMesh(pinGeo, goldPinMat, pinPositions.length);
+            const dummy = new THREE.Object3D();
+
+            pinPositions.forEach((pos, idx) => {
+                dummy.position.set(pos.x, -pcbThickness / 2 - pinLength / 2, pos.z);
+                dummy.updateMatrix();
+                pinsInstanced.setMatrixAt(idx, dummy.matrix);
+            });
+            pinsInstanced.instanceMatrix.needsUpdate = true;
+            cpuGroup.add(pinsInstanced);
+
+            // --- 4. 背面中央表面貼裝電容陣列 (MLCC) ---
+            const capGeo = new THREE.BoxGeometry(0.055, 0.032, 0.032);
+            const capBodyMat = new THREE.MeshStandardMaterial({ color: 0x8c6239, roughness: 0.4, metalness: 0.3 });
+            const capSolderMat = new THREE.MeshStandardMaterial({ color: 0xd1d5db, roughness: 0.25, metalness: 0.9 });
+
+            const capGroup = new THREE.Group();
+            for (let cx = -3; cx <= 3; cx++) {
+                for (let cz = -4; cz <= 4; cz++) {
+                    // 模擬實體照片中中央整齊排列的表面貼裝電容群
+                    if ((cx + cz) % 2 === 0 || Math.abs(cx) <= 1) {
+                        const cap = new THREE.Mesh(capGeo, capBodyMat);
+                        cap.position.set(cx * 0.11, -pcbThickness / 2 - 0.016, cz * 0.085);
+                        capGroup.add(cap);
+                    }
+                }
+            }
+            cpuGroup.add(capGroup);
+
+            // --- 5. 建立 3D 互動熱點 DOM 元素 ---
+            let showHotspots = true;
+            const hotspotElements = HOTSPOTS_DATA.map((hs, index) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'hotspot-pin pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#FF5500] text-white text-xs font-black flex items-center justify-center shadow-lg shadow-[#FF5500]/50 border-2 border-white transition-transform duration-200 hover:scale-125 cursor-pointer';
+                btn.textContent = index + 1;
+                btn.title = hs.title;
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    autoRotate = false;
+                    updateAutoRotateUI();
+                    selectHotspot(index);
+                    targetRotX = hs.cameraPreset.rotX;
+                    targetRotY = hs.cameraPreset.rotY;
+                    zoomFactor = hs.cameraPreset.zoom;
+                    updateZoomUI();
+                });
+                hotspotsLayer.appendChild(btn);
+                return btn;
+            });
+
+            // 預設選中第一個熱點
+            selectHotspot(0);
+
+            // --- 6. 滑鼠與觸控 360° 旋轉與縮放互動控制 ---
+            // 初始設定為 45° 仰視立體角
+            let targetRotX = 0.58;
+            let targetRotY = -0.52;
+            let currentRotX = targetRotX;
+            let currentRotY = targetRotY;
+
+            let isDragging = false;
+            let prevPointerX = 0;
+            let prevPointerY = 0;
+            let autoRotate = true;
+            let initialPinchDist = null;
+            let initialZoomOnPinch = 1.0;
+
+            function updateAutoRotateUI() {
+                const textEl = document.getElementById('text-auto-rotate');
+                const iconEl = document.getElementById('icon-rotate');
+                if (autoRotate) {
+                    textEl.textContent = '自動旋轉：開啟';
+                    iconEl.classList.add('text-[#FF5500]');
+                } else {
+                    textEl.textContent = '自動旋轉：暫停';
+                    iconEl.classList.remove('text-[#FF5500]');
+                }
+            }
+
+            function updateZoomUI() {
+                zoomFactor = Math.max(0.65, Math.min(2.1, zoomFactor));
+                document.getElementById('zoom-level-text').textContent = Math.round(zoomFactor * 100) + '%';
+            }
+
+            // 滑鼠事件
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                prevPointerX = e.clientX;
+                prevPointerY = e.clientY;
+                autoRotate = false;
+                updateAutoRotateUI();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const deltaX = e.clientX - prevPointerX;
+                const deltaY = e.clientY - prevPointerY;
+                prevPointerX = e.clientX;
+                prevPointerY = e.clientY;
+
+                targetRotY += deltaX * 0.0085;
+                targetRotX += deltaY * 0.0085;
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            // 滾輪縮放
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                zoomFactor += delta;
+                updateZoomUI();
+            }, { passive: false });
+
+            // 觸控事件 (單指旋轉 + 雙指縮放)
+            container.addEventListener('touchstart', (e) => {
+                autoRotate = false;
+                updateAutoRotateUI();
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    prevPointerX = e.touches[0].clientX;
+                    prevPointerY = e.touches[0].clientY;
+                } else if (e.touches.length === 2) {
+                    isDragging = false;
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    initialPinchDist = Math.hypot(dx, dy);
+                    initialZoomOnPinch = zoomFactor;
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1 && isDragging) {
+                    const deltaX = e.touches[0].clientX - prevPointerX;
+                    const deltaY = e.touches[0].clientY - prevPointerY;
+                    prevPointerX = e.touches[0].clientX;
+                    prevPointerY = e.touches[0].clientY;
+
+                    targetRotY += deltaX * 0.01;
+                    targetRotX += deltaY * 0.01;
+                } else if (e.touches.length === 2 && initialPinchDist) {
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    const currentDist = Math.hypot(dx, dy);
+                    zoomFactor = initialZoomOnPinch * (currentDist / initialPinchDist);
+                    updateZoomUI();
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchend', () => {
+                isDragging = false;
+                initialPinchDist = null;
+            });
+
+            // 按鈕控制綁定
+            document.getElementById('btn-auto-rotate').addEventListener('click', () => {
+                autoRotate = !autoRotate;
+                updateAutoRotateUI();
+            });
+
+            document.getElementById('btn-toggle-hotspots').addEventListener('click', (e) => {
+                showHotspots = !showHotspots;
+                const btn = e.currentTarget;
+                const span = btn.querySelector('span');
+                if (showHotspots) {
+                    span.textContent = '構造熱點：開啟';
+                    hotspotsLayer.classList.remove('hidden');
+                    btn.classList.add('bg-[#FF5500]/20', 'text-[#FF5500]', 'border-[#FF5500]/50');
+                } else {
+                    span.textContent = '構造熱點：隱藏';
+                    hotspotsLayer.classList.add('hidden');
+                    btn.classList.remove('bg-[#FF5500]/20', 'text-[#FF5500]', 'border-[#FF5500]/50');
+                }
+            });
+
+            document.getElementById('btn-zoom-in').addEventListener('click', () => {
+                zoomFactor += 0.15;
+                updateZoomUI();
+            });
+
+            document.getElementById('btn-zoom-out').addEventListener('click', () => {
+                zoomFactor -= 0.15;
+                updateZoomUI();
+            });
+
+            document.getElementById('btn-reset-view').addEventListener('click', () => {
+                targetRotX = 0.58;
+                targetRotY = -0.52;
+                zoomFactor = 1.0;
+                autoRotate = true;
+                updateAutoRotateUI();
+                updateZoomUI();
+            });
+
+            // 快速視角預設按鈕
+            const presetButtons = document.querySelectorAll('.preset-btn');
+            presetButtons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const preset = btn.getAttribute('data-preset');
+                    autoRotate = false;
+                    updateAutoRotateUI();
+
+                    presetButtons.forEach(b => b.classList.remove('border-[#FF5500]/70', 'text-white'));
+                    btn.classList.add('border-[#FF5500]/70', 'text-white');
+
+                    if (preset === 'front') {
+                        // 正面頂蓋 (IHS) 垂直正視
+                        targetRotX = Math.PI / 2;
+                        targetRotY = 0;
+                        zoomFactor = 1.1;
+                        selectHotspot(0);
+                    } else if (preset === 'side') {
+                        // 側面輪廓 (展示頂蓋厚度、PCB 與金色針腳側面排列)
+                        targetRotX = 0.06;
+                        targetRotY = Math.PI / 4;
+                        zoomFactor = 1.25;
+                        selectHotspot(1);
+                    } else if (preset === 'back') {
+                        // 背面 AM4 1331 鍍金針腳陣列與中央電容
+                        targetRotX = -Math.PI / 2;
+                        targetRotY = 0;
+                        zoomFactor = 1.1;
+                        selectHotspot(2);
+                    } else if (preset === 'angle45') {
+                        // 45° 仰視立體展示
+                        targetRotX = 0.58;
+                        targetRotY = -0.52;
+                        zoomFactor = 1.0;
+                    }
+                    updateZoomUI();
+                });
+            });
+
+            // 構造說明卡片數字切換按鈕
+            document.querySelectorAll('.hs-selector').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.getAttribute('data-hs-index'), 10);
+                    const hs = HOTSPOTS_DATA[idx];
+                    autoRotate = false;
+                    updateAutoRotateUI();
+                    selectHotspot(idx);
+                    targetRotX = hs.cameraPreset.rotX;
+                    targetRotY = hs.cameraPreset.rotY;
+                    zoomFactor = hs.cameraPreset.zoom;
+                    updateZoomUI();
+                });
+            });
+
+            // 響應式視窗調整
+            function onWindowResize() {
+                if (!container) return;
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            }
+            window.addEventListener('resize', onWindowResize);
+
+            // 隱藏載入遮罩
+            setTimeout(() => {
+                loaderOverlay.classList.add('opacity-0', 'pointer-events-none');
+            }, 350);
+
+            // 主動畫渲染迴圈
+            const tempV = new THREE.Vector3();
+            function animate() {
+                requestAnimationFrame(animate);
+
+                if (autoRotate && !isDragging) {
+                    targetRotY += 0.0055;
+                }
+
+                // 平滑阻尼插值旋轉與縮放
+                currentRotX += (targetRotX - currentRotX) * 0.1;
+                currentRotY += (targetRotY - currentRotY) * 0.1;
+
+                cpuGroup.rotation.x = currentRotX;
+                cpuGroup.rotation.y = currentRotY;
+
+                const targetZ = baseCameraDistance / zoomFactor;
+                camera.position.z += (targetZ - camera.position.z) * 0.12;
+
+                // 更新 3D 熱點在 2D 畫面上的投影座標
+                if (showHotspots) {
+                    cpuGroup.updateMatrixWorld();
+                    const widthHalf = container.clientWidth / 2;
+                    const heightHalf = container.clientHeight / 2;
+
+                    HOTSPOTS_DATA.forEach((hs, idx) => {
+                        tempV.copy(hs.position);
+                        tempV.applyMatrix4(cpuGroup.matrixWorld);
+
+                        // 判斷熱點是否朝向攝影機前方，背對時降低透明度避免穿模干擾
+                        const isFrontFacing = tempV.z > -0.25;
+                        tempV.project(camera);
+
+                        const x = (tempV.x * widthHalf) + widthHalf;
+                        const y = -(tempV.y * heightHalf) + heightHalf;
+
+                        const el = hotspotElements[idx];
+                        el.style.left = `${x}px`;
+                        el.style.top = `${y}px`;
+                        el.style.opacity = isFrontFacing ? '1' : '0.32';
+                    });
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        }
+
+        /**
+         * 一鍵下載完整單一 HTML 原始碼檔案功能
+         */
+        function initDownloadFeature() {
+            const btnDownload = document.getElementById('btn-download-html');
+            btnDownload.addEventListener('click', () => {
+                try {
+                    // 取得當前完整 HTML 文件原始碼
+                    const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+                    const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'AMD-Ryzen-5-5600-360-Showcase.html';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    showToast('已成功下載 AMD-Ryzen-5-5600-360-Showcase.html');
+                } catch (err) {
+                    showToast('下載發生錯誤，請嘗試使用瀏覽器另存新檔 (Ctrl+S)');
+                }
+            });
+        }
+
+        // 視窗載入完成後啟動 3D 檢視器與下載功能
+        window.onload = function () {
+            init3DViewer();
+            initDownloadFeature();
+        };
+    </script>
+</body>
+</html>
